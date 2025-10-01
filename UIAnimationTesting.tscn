@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dk4wrveb4amb6"]
+[gd_scene load_steps=2 format=3 uid="uid://uuma5jspj4gj"]
 
-[ext_resource type="Script" uid="uid://dcvhamebgboom" path="res://UIAnimationTesting.gd" id="1_4b65k"]
+[ext_resource type="Script" path="res://UIAnimationTesting.gd" id="1_4b65k"]
 
 [node name="UIAnimationTesting" type="Control"]
 layout_mode = 3

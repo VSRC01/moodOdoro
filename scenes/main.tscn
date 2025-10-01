@@ -1,0 +1,102 @@
+[gd_scene load_steps=16 format=3 uid="uid://cf26ixrma6rks"]
+
+[ext_resource type="Shader" uid="uid://bs7gwi6p0mrl5" path="res://shaders/sky.gdshader" id="1_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://fvti02t4hsyi" path="res://scenes/garden.tscn" id="1_o5qli"]
+[ext_resource type="Shader" uid="uid://tpenttk86jmv" path="res://shaders/pixel.gdshader" id="1_tbgi4"]
+[ext_resource type="Script" uid="uid://cy8xfqm101yoc" path="res://scripts/main.gd" id="1_tefeu"]
+[ext_resource type="PackedScene" uid="uid://c35ptqxcebm6n" path="res://ui/pomodoro.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://bs22e0njpyjx3" path="res://ui/break.tscn" id="3_sugp2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tefeu"]
+render_priority = 0
+shader = ExtResource("1_tbgi4")
+shader_parameter/target_resolution = Vector2(320, 180)
+shader_parameter/colors_per_channel = 8.0
+shader_parameter/depth_outline_strength = 0.0
+shader_parameter/normal_outline_strength = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_o6xl0"]
+material = SubResource("ShaderMaterial_tefeu")
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tbgi4"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tefeu"]
+noise = SubResource("FastNoiseLite_tbgi4")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o6xl0"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tipki"]
+noise = SubResource("FastNoiseLite_o6xl0")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_85g3d"]
+shader = ExtResource("1_jyhfs")
+shader_parameter/cloud_shape_sampler = SubResource("NoiseTexture2D_tipki")
+shader_parameter/cloud_noise_sampler = SubResource("NoiseTexture2D_tefeu")
+shader_parameter/clouds_samples = 32
+shader_parameter/shadow_sample = 4
+shader_parameter/clouds_density = 0.5
+shader_parameter/clouds_scale = 1.0
+shader_parameter/clouds_smoothness = 0.035
+shader_parameter/clouds_light_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_shadow_intensity = 1.0
+shader_parameter/high_clouds_density = 0.0
+shader_parameter/top_color = Color(0, 1, 1, 1)
+shader_parameter/bottom_color = Color(0, 0, 0, 1)
+shader_parameter/sun_scatter = Color(1, 1, 1, 1)
+shader_parameter/astro_tint = Color(0.81833446, 0.8183347, 1.540184e-06, 1)
+shader_parameter/astro_scale = 1.0
+shader_parameter/astro_intensity = 1.0
+shader_parameter/stars_intensity = 1.0000000149012
+shader_parameter/shooting_stars_intensity = 1.0000000149012
+shader_parameter/shooting_star_tint = Color(0, 0, 0, 1)
+shader_parameter/vertical_sections = 21
+shader_parameter/star_size = 0.02
+shader_parameter/star_falloff = 4.0
+shader_parameter/margin = 0.05
+
+[sub_resource type="Sky" id="Sky_choun"]
+sky_material = SubResource("ShaderMaterial_85g3d")
+
+[sub_resource type="Environment" id="Environment_ya4ey"]
+background_mode = 2
+sky = SubResource("Sky_choun")
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_tefeu")
+zoom_speed = 0.01
+pan_speed = 0.01
+rotation_speed = 0.01
+can_pan = true
+can_zoom = true
+
+[node name="PixelShader" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("QuadMesh_o6xl0")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ya4ey")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, -0.50000006, 0.8660254, 0, -0.8660254, -0.50000006, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CameraPivot" type="Marker3D" parent="."]
+transform = Transform3D(0.49691874, 0.7114376, -0.49691874, 0.70710665, 5.3385065e-08, 0.70710677, 0.50306237, -0.7027492, -0.50306225, 1.5273924, 0, 1.510757)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(0, 1.0000001, 5.9604645e-08, -1, 1.1920929e-07, -2.9802322e-08, 2.9802322e-08, 0, 1, 0.84239316, 3.5762787e-07, 10.585098)
+projection = 1
+size = 10.0
+near = 0.001
+
+[node name="Garden" parent="." instance=ExtResource("1_o5qli")]
+
+[node name="Pomodoro" parent="." instance=ExtResource("2_0wfyh")]
+visible = false
+
+[node name="BreakUI" parent="." instance=ExtResource("3_sugp2")]
+visible = false
+
+[editable path="Garden"]
